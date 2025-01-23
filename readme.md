@@ -2,7 +2,7 @@
 
 This is my attempt at creating an universal programming language
 syntax that is not hard to type, not hard to read and
-that can work well with dot-autocomplete of editors.
+that can work well with dot-autocompletion of editors.
 
 ```ebnf
 Whitespace = '\r' | ' ' | Comment.
@@ -26,9 +26,9 @@ Atom = id | num | str.
 
 str = /"[\u0000-\uFFFF]"/.
 
-id = ident_begin {}.
-ident_begin = /[a-zA-Z_<>\?\=!\+\*\/\%\$]/.
-indent_continue = indent_begin | digit.
+id = ident_begin {ident_continue}.
+ident_begin = /[a-zA-Z_<>\?=!\+\*\/\%\$]/.
+ident_continue = ident_begin | digit.
 
 num = hex | bin | dec.
 dec = [neg] integer [frac | float].
@@ -43,7 +43,7 @@ digit_ = digit | '_'.
 
 See that `.` can be used to implement autocompletion.
 For example: `module.symbol`.
-If can also be chained, like
+It can also be chained, like
 `module.struct.field` (which means `[[module struct] field]`).
 
 ## Examples
