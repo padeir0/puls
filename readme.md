@@ -46,14 +46,15 @@ Atom = id | num | str.
 str = /'[\u0000-\uFFFF]*'/.
 
 id = ident_begin {ident_continue}.
-ident_begin = /[a-zA-Z_<>\?=!\-\+\*\/\%\$\']/.
+ident_begin = /[a-zA-Z_<>\?=!\-\+\*\/\%\$]/.
 ident_continue = ident_begin | digit.
 
 num = hex | bin | dec.
-dec = [neg] integer [frac | float].
+dec = [neg] integer [frac | float] [exp].
 integer = digit {digit_}.
 frac = '/' integer.
 float = '.' integer.
+exp = 'e' [neg] integer.
 
 hex = '0x' hexdigits.
 hexdigits = /[0-9A-Fa-f_]+/.

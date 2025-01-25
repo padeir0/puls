@@ -1,0 +1,27 @@
+editor.statusline
+  mode.normal 'NORMAL'
+  mode.insert 'INSERT'
+  mode.select 'SELECT'
+
+bindsym XF86MonBrightnessUp
+  exec --no-startup-id 'brightnessctl set +1%'
+bindsym XF86MonBrightnessDown
+  exec --no-startup-id 'brightnessctl set 1%-'
+
+bindsym Print
+  exec 'gnome-screenshot -i -a'
+
+bar
+  status_command i3status
+
+'name'
+  age.25
+  tokens.[32 35 75]
+  alive.true
+
+map
+  'name'
+    map
+      age.25
+      tokens.[array 32 35 75]
+      alive.true

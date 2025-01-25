@@ -1,0 +1,9 @@
+type A [union T_1 T_2 T_3]
+
+type B
+  struct field_1.T_1
+         field_1.T_2
+         field_n.T_3
+
+proc max [a.num b.num] num
+     if [>= a b] a b

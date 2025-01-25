@@ -1,0 +1,124 @@
+#!/bin/python
+from parser import parse
+from lexer import lex
+import os
+import sys
+import traceback
+
+def extract_offense(range, program):
+    p_line_start = None
+    p_index_start = 0
+    p_line_end = None
+    p_index_end = 0
+    
+    lines = 0
+    columns = 0
+    index = 0
+
+    for c in program:
+        index += 1
+        columns += 1
+        if c == "\n":
+            lines += 1
+            columns = 0
+
+        if lines == range.start.line and p_line_start == None:
+            p_line_start = index
+        if lines == range.end.line:
+            p_line_end = index
+
+        if lines == range.start.line and columns == range.start.column:
+            p_index_start = index
+        if lines == range.end.line and columns == range.end.column:
+            p_index_end = index
+
+    offense = program[p_line_start:p_index_start]
+    offense += "\033[0;31m"
+    offense += program[p_index_start:p_index_end]
+    offense += "\033[0m"
+    offense += program[p_index_end:p_line_end]
+
+    return offense
+
+def get_puls_files(directory_path):
+    files_contents = {}
+    
+    for root, _, files in os.walk(directory_path):
+        for file in files:
+            if file.endswith(".puls"):
+                file_path = os.path.join(root, file)
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        modname = file[:len(file)-5] # removes ".puls"
+                        files_contents[modname] = f.read()
+                except Exception:
+                    print(f"Could not parse file {file_path}:\n{traceback.format_exc()}")
+    
+    return files_contents
+
+def get_root_dir(file_path):
+    abs_path = os.path.abspath(file_path)
+    components = abs_path.split(os.sep)
+    if components:
+        path = os.sep.join(components[:len(components)-1])
+        return path
+    else:
+        return None
+
+def parse_file(file_path):
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            file_contents = f.read()
+            res = parse(file_path, file_contents, False)
+            if res.failed():
+                print(res.error)
+            else:
+                print(res.value)
+    except Exception:
+        print(f"Could not parse file {file_path}:\n{traceback.format_exc()}")
+
+def lex_file(file_path):
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            file_contents = f.read()
+            tks = lex(file_path, file_contents)
+            for tk in tks:
+                print(tk)
+    except Exception:
+        print(f"Could not lex file {file_path}:\n{traceback.format_exc()}")
+
+def get_puls_file_names(directory_path):
+    file_names = []
+    
+    for root, _, files in os.walk(directory_path):
+        for file in files:
+            if file.endswith(".puls"):
+                file_path = os.path.join(root, file)
+                file_names += [file_path]
+    return file_names
+
+def test_whole_dir(folder_path):
+    files = get_puls_file_names(folder_path)
+    for file in files:
+        parse_file(file)
+    
+if __name__ == "__main__":
+    if len(sys.argv) == 2:
+        file_path = sys.argv[1]
+        parse_file(file_path)
+    elif len(sys.argv) == 3:
+        keyword = sys.argv[1]
+        if keyword == "test":
+            folder = sys.argv[2]
+            test_whole_dir(folder)
+        elif keyword == "parse":
+            file = sys.argv[2]
+            parse_file(file)
+        elif keyword == "lex":
+            file = sys.argv[2]
+            lex_file(file)
+        else:
+            print("invalid parameters")
+    else:
+        print("no arguments provided")
+

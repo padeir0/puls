@@ -1,0 +1,24 @@
+define Id
+  matrix
+    1 0 0
+    0 1 0
+    0 0 1
+
+define M
+  map 'one'.1 'two'.2 'three'.3
+
+graph
+  a b c       # vertices
+  a.b a.c b.c # edges
+
+graph
+  a b c
+  b c
+  c
+
+table
+  month expenses revenue
+  1     0        0
+  2     100      100
+  3     2        20
+  4     0        +inf

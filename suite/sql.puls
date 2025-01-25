@@ -1,0 +1,4 @@
+select 
+  name birthday country
+  from users
+  where [= id 314159]
